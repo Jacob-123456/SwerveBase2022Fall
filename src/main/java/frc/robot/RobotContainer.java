@@ -10,10 +10,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.ZeroHeading;
 import frc.robot.commands.auto.SplineAuto;
-import frc.robot.commands.swerve.SetSwerveDrive;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.commands.swerve.SetSwerveDriveCmd;
+import frc.robot.commands.swerve.ZeroHeadingCmd;
+import frc.robot.subsystems.SwerveSys;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -23,7 +23,7 @@ import frc.robot.subsystems.DriveSubsystem;
  */
 public class RobotContainer {
   // The robot's subsystems
-  final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  final SwerveSys m_robotDrive = new SwerveSys();
 
   private final SendableChooser<Command> m_autoChooser = new SendableChooser<Command>();
 
@@ -56,7 +56,7 @@ public class RobotContainer {
         m_robotDrive.setIdleMode(true);
 
         m_robotDrive.setDefaultCommand(
-        new SetSwerveDrive(
+        new SetSwerveDriveCmd(
             m_robotDrive,
             () -> m_leftJoystick.getY(),
             () -> m_leftJoystick.getX(),
@@ -99,7 +99,7 @@ public class RobotContainer {
     // driver.Y_button.whenPressed(new PositionTurnModule(m_robotDrive,
     // ModulePosition.BACK_RIGHT));
 
-    m_right2.whenPressed(new ZeroHeading(m_robotDrive));
+    m_right2.whenPressed(new ZeroHeadingCmd(m_robotDrive));
   }
 
   private void initializeAutoChooser() {
