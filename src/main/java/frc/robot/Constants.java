@@ -144,6 +144,8 @@ public final class Constants {
 
     public static double kFreeMetersPerSecond = 5600 * kDriveEncRPMperMPS;
 
+    public static double kFreeMetersPerSecond = 5600 * kDriveEncRPMperMPS;// 3.6
+  
     public static final double kTurningDegreesPerEncRev =
 
         360 / mk4iL2TurnGearRatio;
