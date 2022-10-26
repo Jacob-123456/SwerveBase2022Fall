@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.ctre.phoenix.unmanaged.Unmanaged;
-import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.hal.SimDouble;
 import edu.wpi.first.hal.simulation.SimDeviceDataJNI;
@@ -22,10 +21,10 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -33,7 +32,6 @@ import frc.robot.Constants.CanConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.DriveConstants.ModulePosition;
 import frc.robot.utils.ModuleMap;
-import frc.robot.utils.ShuffleboardContent;
 
 public class DriveSubsystem extends SubsystemBase {
 
@@ -82,7 +80,7 @@ public class DriveSubsystem extends SubsystemBase {
               CanConstants.BACK_RIGHT_MODULE_STEER_OFFSET)));
   // The gyro sensor
 
-  private final AHRS m_gyro = new AHRS(SPI.Port.kMXP, (byte) 200);
+  private final Gyro m_gyro = new ADXRS450_Gyro();
 
   private PIDController m_xController = new PIDController(DriveConstants.kP_X, 0, DriveConstants.kD_X);
   private PIDController m_yController = new PIDController(DriveConstants.kP_Y, 0, DriveConstants.kD_Y);
@@ -99,17 +97,13 @@ public class DriveSubsystem extends SubsystemBase {
       VecBuilder.fill(0.05),
       VecBuilder.fill(0.1, 0.1, 0.1));
 
-  private boolean showOnShuffleboard = true;
-
   private SimDouble m_simAngle;// navx sim
-
-  private double m_simYaw;
 
   public double throttleValue;
 
   public double targetAngle;
 
-   public boolean m_fieldOriented;
+  public boolean m_fieldOriented;
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
@@ -129,7 +123,6 @@ public class DriveSubsystem extends SubsystemBase {
       m_simAngle = new SimDouble((SimDeviceDataJNI.getSimValueHandle(dev, "Yaw")));
     }
 
-    ShuffleboardContent.initMisc(this);
   }
 
   /**
@@ -148,22 +141,33 @@ public class DriveSubsystem extends SubsystemBase {
       double throttle,
       double strafe,
       double rotation,
-      
+      boolean lockWheels,
       boolean isOpenLoop) {
     throttle *= DriveConstants.kMaxSpeedMetersPerSecond;
     strafe *= DriveConstants.kMaxSpeedMetersPerSecond;
     rotation *= DriveConstants.kMaxRotationRadiansPerSecond;
-    SmartDashboard.putNumber("Rotn1", rotation);
-    ChassisSpeeds chassisSpeeds =m_fieldOriented
-        ? ChassisSpeeds.fromFieldRelativeSpeeds(
-            throttle, strafe, rotation, getHeadingRotation2d())
-        : new ChassisSpeeds(throttle, strafe, rotation);
+    
 
-    Map<ModulePosition, SwerveModuleState> moduleStates = ModuleMap
-        .of(kSwerveKinematics.toSwerveModuleStates(chassisSpeeds));
+    Map<ModulePosition, SwerveModuleState> moduleStates = null;
+
+    if(lockWheels) {
+      SmartDashboard.putBoolean("isLocked", true);
+      moduleStates = ModuleMap
+          .of(new SwerveModuleState(-0.1, new Rotation2d(Units.degreesToRadians(45))), new SwerveModuleState(-0.1, new Rotation2d(-45)), new SwerveModuleState(0.1, new Rotation2d(-45)), new SwerveModuleState(0.1, new Rotation2d(45)));
+    }  
+    else {
+      SmartDashboard.putBoolean("isLocked", false);
+      ChassisSpeeds chassisSpeeds = m_fieldOriented
+          ? ChassisSpeeds.fromFieldRelativeSpeeds(
+              throttle, strafe, rotation, getHeadingRotation2d())
+          : new ChassisSpeeds(throttle, strafe, rotation);
+
+      moduleStates = ModuleMap
+          .of(kSwerveKinematics.toSwerveModuleStates(chassisSpeeds));
+    }
 
     SwerveDriveKinematics.desaturateWheelSpeeds(
-        ModuleMap.orderedValues(moduleStates, new SwerveModuleState[0]), DriveConstants.kMaxSpeedMetersPerSecond);
+      ModuleMap.orderedValues(moduleStates, new SwerveModuleState[0]), DriveConstants.kMaxSpeedMetersPerSecond);
 
     for (SwerveModuleSparkMax module : ModuleMap.orderedValuesList(m_swerveModules))
       module.setDesiredState(moduleStates.get(module.getModulePosition()), isOpenLoop);
@@ -173,8 +177,9 @@ public class DriveSubsystem extends SubsystemBase {
   public void periodic() {
     // Update the odometry in the periodic block
     updateOdometry();
-    SmartDashboard.putNumber("Yaw",-m_gyro.getYaw());
-
+    SmartDashboard.putNumber("Yaw", -m_gyro.getAngle());
+    SmartDashboard.putNumber("x", m_odometry.getEstimatedPosition().getX());
+    SmartDashboard.putNumber("y", m_odometry.getEstimatedPosition().getY());
   }
 
   public void updateOdometry() {
@@ -244,14 +249,12 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void resetModuleEncoders() {
     for (SwerveModuleSparkMax module : ModuleMap.orderedValuesList(m_swerveModules))
-      module.resetAngleToAbsolute();
+      module.zeroModule();
   }
 
   /** Zeroes the heading of the robot. */
   public void zeroHeading() {
-    // m_gyro.reset();
-    // m_gyro.setAngleAdjustment(0);
-
+    m_gyro.reset();
   }
 
   public Translation2d getTranslation() {
@@ -267,7 +270,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void setSwerveModuleStatesAuto(SwerveModuleState[] states) {
-    setSwerveModuleStates(states, false);
+    setSwerveModuleStates(states, true);
   }
 
   public ProfiledPIDController getThetaPidController() {

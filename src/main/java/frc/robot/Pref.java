@@ -11,7 +11,6 @@ import java.util.Collection;
 /**
  * Add your docs here.
  */
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -24,7 +23,7 @@ public class Pref {
   // here. Call these from Commands.
 
   private static Collection<String> v;
-  private static Enumeration<String> e;
+  // private static Enumeration<String> e;
   private static String tempString;
   private static double tempDouble;
 

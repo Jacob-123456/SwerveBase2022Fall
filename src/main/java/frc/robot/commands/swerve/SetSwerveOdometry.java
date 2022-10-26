@@ -8,9 +8,7 @@
 package frc.robot.commands.swerve;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.DriveSubsystem;
 
 /** Sets the robot's position */
@@ -18,7 +16,6 @@ public class SetSwerveOdometry extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final DriveSubsystem m_swerveDrive;
 
-  private final FieldSim m_fieldSim;
   private final Pose2d m_pose2d;
 
   /**
@@ -28,23 +25,7 @@ public class SetSwerveOdometry extends CommandBase {
    * @param pose2d position to set odometry to
    */
   public SetSwerveOdometry(DriveSubsystem swerveDrive, Pose2d pose2d) {
-    this(swerveDrive, null, pose2d);
-  }
-
-  /**
-   * Sets the robot's position
-   *
-   * @param swerveDrive Swerve's odometry is set
-   * @param fieldSim fieldSim to set robot's position if we're simulating the robot
-   * @param pose2d position to set odometry to
-   */
-  public SetSwerveOdometry(DriveSubsystem swerveDrive, FieldSim fieldSim, Pose2d pose2d) {
-    if (RobotBase.isSimulation() && fieldSim == null)
-      System.out.println(
-          "SetOdometry Command Error: Robot is in Simulation, but you did not add FieldSim to the argument");
-
     m_swerveDrive = swerveDrive;
-    m_fieldSim = fieldSim;
     m_pose2d = pose2d;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(swerveDrive);

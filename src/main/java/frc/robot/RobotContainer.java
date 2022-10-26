@@ -5,23 +5,16 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.Constants.DriveConstants.ModulePosition;
-import frc.robot.Constants.OIConstants;
-import frc.robot.commands.ToggleFieldOriented;
-import frc.robot.commands.auto.DriveForward;
-import frc.robot.commands.auto.FiveBallAuto;
-import frc.robot.commands.swerve.JogDriveModule;
-import frc.robot.commands.swerve.JogTurnModule;
-import frc.robot.commands.swerve.PositionTurnModule;
+import frc.robot.commands.ZeroHeading;
+import frc.robot.commands.auto.Spline1Path;
+import frc.robot.commands.auto.Spline2Path;
+import frc.robot.commands.auto.SplineAuto;
 import frc.robot.commands.swerve.SetSwerveDrive;
-import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.DriveSubsystem;
 
 /*
@@ -34,29 +27,21 @@ public class RobotContainer {
   // The robot's subsystems
   final DriveSubsystem m_robotDrive = new DriveSubsystem();
 
-  public final FieldSim m_fieldSim = new FieldSim(m_robotDrive);
-
   private final SendableChooser<Command> m_autoChooser = new SendableChooser<Command>();
 
   // The driver's controller
 
-  static Joystick leftJoystick = new Joystick(OIConstants.kDriverControllerPort);
+  private final Joystick m_leftJoystick = new Joystick(0);
+  private final Joystick m_rightJoystick = new Joystick(1);
 
-  private XboxController m_coDriverController = new XboxController(OIConstants.kCoDriverControllerPort);
-
-  final GamepadButtons driver = new GamepadButtons(m_coDriverController, true);
+  private final JoystickButton m_right2 = new JoystickButton(m_rightJoystick, 2);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    // Preferences.removeAll();
-    Pref.deleteUnused();
-    Pref.addMissing();
-    SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
     // Configure the button bindings
 
-    m_fieldSim.initSim();
     initializeAutoChooser();
     // sc.showAll();
     // Configure default commands
@@ -69,43 +54,43 @@ public class RobotContainer {
         // () -> -m_coDriverController.getRawAxis(1),
         // () -> -m_coDriverController.getRawAxis(0),
         // () -> -m_coDriverController.getRawAxis(4)));
+
+        m_robotDrive.setIdleMode(true);
+
         m_robotDrive.setDefaultCommand(
         new SetSwerveDrive(
             m_robotDrive,
-            () -> leftJoystick.getRawAxis(1),
-            () -> leftJoystick.getRawAxis(0),
-            () -> leftJoystick.getRawAxis(2)));
+            () -> m_leftJoystick.getY(),
+            () -> m_leftJoystick.getX(),
+            () -> m_rightJoystick.getX(),
+            () -> m_leftJoystick.getRawButton(1)));
 
-    driver.leftTrigger.whileHeld(new JogTurnModule(
-        m_robotDrive,
-        () -> -m_coDriverController.getRawAxis(1),
-        () -> m_coDriverController.getRawAxis(0),
-        () -> m_coDriverController.getRawAxis(2),
-        () -> m_coDriverController.getRawAxis(3)));
+    // driver.leftTrigger.whileHeld(new JogTurnModule(
+    //     m_robotDrive,
+    //     () -> -m_coDriverController.getRawAxis(1),
+    //     () -> m_coDriverController.getRawAxis(0),
+    //     () -> m_coDriverController.getRawAxis(2),
+    //     () -> m_coDriverController.getRawAxis(3)));
 
-    // individual modules
-    driver.leftBumper.whileHeld(new JogDriveModule(
-        m_robotDrive,
-        () -> -m_coDriverController.getRawAxis(1),
-        () -> m_coDriverController.getRawAxis(0),
-        () -> m_coDriverController.getRawAxis(2),
-        () -> m_coDriverController.getRawAxis(3),
-        true));
+    // // individual modules
+    // driver.leftBumper.whileHeld(new JogDriveModule(
+    //     m_robotDrive,
+    //     () -> -m_coDriverController.getRawAxis(1),
+    //     () -> m_coDriverController.getRawAxis(0),
+    //     () -> m_coDriverController.getRawAxis(2),
+    //     () -> m_coDriverController.getRawAxis(3),
+    //     true));
 
-    // all modules
-    driver.rightBumper.whileHeld(new JogDriveModule(
-        m_robotDrive,
-        () -> -m_coDriverController.getRawAxis(1),
-        () -> m_coDriverController.getRawAxis(0),
-        () -> m_coDriverController.getRawAxis(2),
-        () -> m_coDriverController.getRawAxis(3),
-        false));
+    // // all modules
+    // driver.rightBumper.whileHeld(new JogDriveModule(
+    //     m_robotDrive,
+    //     () -> -m_coDriverController.getRawAxis(1),
+    //     () -> m_coDriverController.getRawAxis(0),
+    //     () -> m_coDriverController.getRawAxis(2),
+    //     () -> m_coDriverController.getRawAxis(3),
+    //     false));     
 
-
-        JoystickButton button_8 = new JoystickButton(leftJoystick,8);
-        JoystickButton button_7 = new JoystickButton(leftJoystick, 7);       
-
-        button_8.whenPressed(new ToggleFieldOriented(m_robotDrive));
+        
     // position turn modules individually
     // driver.X_button.whenPressed(new PositionTurnModule(m_robotDrive,
     // ModulePosition.FRONT_LEFT));
@@ -116,28 +101,27 @@ public class RobotContainer {
     // driver.Y_button.whenPressed(new PositionTurnModule(m_robotDrive,
     // ModulePosition.BACK_RIGHT));
 
+    m_right2.whenPressed(new ZeroHeading(m_robotDrive));
   }
 
   private void initializeAutoChooser() {
     m_autoChooser.setDefaultOption("Do Nothing", new WaitCommand(0));
-    m_autoChooser.addOption("Drive Forward", new DriveForward(m_robotDrive));
-    m_autoChooser.addOption("5 Ball Auto", new FiveBallAuto(m_robotDrive));
+    m_autoChooser.addOption("Spline", new SplineAuto(m_robotDrive));
 
     SmartDashboard.putData("Auto Selector", m_autoChooser);
 
   }
 
   public void simulationPeriodic() {
-    m_fieldSim.periodic();
     periodic();
   }
 
   public void periodic() {
-    m_fieldSim.periodic();
+
   }
 
   public double getThrottle() {
-    return -leftJoystick.getThrottle();
+    return -m_leftJoystick.getThrottle();
   }
 
   public Command getAutonomousCommand() {

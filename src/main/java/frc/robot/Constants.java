@@ -28,25 +28,25 @@ public final class Constants {
 
   public static final class CanConstants {
 
-    public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 4;
-    public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 5;
-    public static final int FRONT_LEFT_MODULE_STEER_CANCODER = 6;
-    public static final double FRONT_LEFT_MODULE_STEER_OFFSET =231.5;// -Math.toRadians(0.0);
+    public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 5;
+    public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 9;
+    public static final int FRONT_LEFT_MODULE_STEER_CANCODER = 1;
+    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = 313.09;// -Math.toRadians(0.0);
 
-    public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 7;
-    public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 8;
-    public static final int FRONT_RIGHT_MODULE_STEER_CANCODER = 9;
-    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = 317;//-Math.toRadians(-42);
+    public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 6;
+    public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 10;
+    public static final int FRONT_RIGHT_MODULE_STEER_CANCODER = 2;
+    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = 292.27;//-Math.toRadians(-42);
 
-    public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 10;
+    public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 7;
     public static final int BACK_LEFT_MODULE_STEER_MOTOR = 11;
-    public static final int BACK_LEFT_MODULE_STEER_CANCODER = 12;
-    public static final double BACK_LEFT_MODULE_STEER_OFFSET = 181.1;//-Math.toRadians(0.0);
+    public static final int BACK_LEFT_MODULE_STEER_CANCODER = 3;
+    public static final double BACK_LEFT_MODULE_STEER_OFFSET = 228.79;//-Math.toRadians(0.0);
 
-    public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 13;
-    public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 14;
-    public static final int BACK_RIGHT_MODULE_STEER_CANCODER = 15;
-    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = 253.7;//-Math.toRadians(-105);
+    public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 8;
+    public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 12;
+    public static final int BACK_RIGHT_MODULE_STEER_CANCODER = 4;
+    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = 104.48;//-Math.toRadians(-105);
 
   }
 
@@ -57,14 +57,14 @@ public final class Constants {
     public static final boolean kFrontRightTurningMotorReversed = true;
     public static final boolean kBackRightTurningMotorReversed = true;
 
-    public static final boolean kFrontLeftDriveMotorReversed = false;
-    public static final boolean kBackLeftDriveMotorReversed = false;
+    public static final boolean kFrontLeftDriveMotorReversed = true;
+    public static final boolean kBackLeftDriveMotorReversed = true;
     public static final boolean kFrontRightDriveMotorReversed = true;
     public static final boolean kBackRightDriveMotorReversed = true;
 
-    public static final double kTrackWidth = Units.inchesToMeters(22);
+    public static final double kTrackWidth = Units.inchesToMeters(29.5);
     // Distance between centers of right and left wheels on robot
-    public static final double kWheelBase = Units.inchesToMeters(27);
+    public static final double kWheelBase = Units.inchesToMeters(29.5);
 
     public enum ModulePosition {
       FRONT_LEFT,
@@ -94,9 +94,9 @@ public final class Constants {
     public static final double kvVoltSecondsPerMeter = 0.8;
     public static final double kaVoltSecondsSquaredPerMeter = 0.15;
 
-    public static final double kMaxSpeedMetersPerSecond = 3;
+    public static final double kMaxSpeedMetersPerSecond = 5;
 
-    public static final double kMaxRotationRadiansPerSecond = Math.PI;
+    public static final double kMaxRotationRadiansPerSecond = Math.PI * 2;
     public static final double kMaxRotationRadiansPerSecondSquared = Math.PI;
 
     public static final double kP_X = 0.2;
@@ -110,7 +110,7 @@ public final class Constants {
     public static double kControllerDeadband = .05;
     public static double kControllerRotDeadband = .1;
     
-    public static double kVoltCompensation=12.6;
+    public static double kVoltCompensation = 12.6;
 
     // public static final double kMaxRotationRadiansPerSecond =
     // Math.hypot(DriveConstants.kTrackWidth / 2.0,
@@ -123,28 +123,30 @@ public final class Constants {
 
   public static final class ModuleConstants {
 
-    // ModuleConfiguration MK4I_L1
+    // ModuleConfiguration MK4I_L2
     public static final double kWheelDiameterMeters = Units.inchesToMeters(4);
 
-    public static double mk4iL1DriveGearRatio = 1 / ((14.0 / 50.0) * (25.0 / 19.0) * (15.0 / 45.0));// 8.14 .122807
+    public static double mk4iL2DriveGearRatio = 1 / ((14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0));// 8.14 .122807
 
-    public static double mk4iL1TurnGearRatio = 1 / ((14.0 / 50.0) * (10.0 / 60.0));// 21.43 1/.046667
+    public static double mk4iL2TurnGearRatio = 1 / ((14.0 / 50.0) * (10.0 / 60.0));// 21.43 1/.046667
 
     public static final double kDriveMetersPerEncRev =
 
-        (kWheelDiameterMeters * Math.PI) / mk4iL1DriveGearRatio;
+        (kWheelDiameterMeters * Math.PI) / mk4iL2DriveGearRatio;
 
     // in 1 minute at 1 rpm encoder drive moves kDriveMetersPerEncRev
     // so in 1 second encoder travels 1/60 revs = kDriveMetersPerEncRev/60
     // so MPS
 
-    public static final double kDriveEncRPMperMPS = 60 / kDriveMetersPerEncRev;
+    public static final double kDriveEncRPMperMPS = kDriveMetersPerEncRev / 60;
 
-    public static double kFreeMetersPerSecond = 5600 / kDriveEncRPMperMPS;
+    public static double kEncoderRevsPerMeter = 1 / kDriveMetersPerEncRev;
+
+    public static double kFreeMetersPerSecond = 5600 * kDriveEncRPMperMPS;
 
     public static final double kTurningDegreesPerEncRev =
 
-        360 / mk4iL1TurnGearRatio;
+        360 / mk4iL2TurnGearRatio;
 
     // max turn speed = (5400/ 21.43) revs per min 240 revs per min 4250 deg per
     // min
@@ -180,23 +182,17 @@ public final class Constants {
 
   }
 
-  public static final class OIConstants {
-    public static final int kDriverControllerPort = 0;
-    public static final int kCoDriverControllerPort = 1;
- 
-  }
-
   public static final class TrapezoidConstants {
     
     public static final double kMaxSpeedMetersPerSecond = 3;
 
-    public static final double kMaxAccelerationMetersPerSecondSquared = 3;
+    public static final double kMaxAccelerationMetersPerSecondSquared = 15;
 
     // public static final double kMaxAngularSpeedDegreesPerSecond = 800;
 
     // public static final double kMaxAngularSpeedDegreesPerSecondSquared =2000;
     public static final double kMaxRotationRadiansPerSecond = Math.PI;
-    public static final double kMaxRotationRadiansPerSecondSquared = Math.PI * 2;
+    public static final double kMaxRotationRadiansPerSecondSquared = Math.PI;
 
     public static final double kPXController = 1;
     public static final double kPYController = 1;

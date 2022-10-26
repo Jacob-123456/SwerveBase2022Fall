@@ -1,9 +1,11 @@
 package frc.robot.commands.swerve;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
@@ -15,6 +17,7 @@ public class SetSwerveDrive extends CommandBase {
   private final SlewRateLimiter m_slewY = new SlewRateLimiter(DriveConstants.kTranslationSlew);
   private final SlewRateLimiter m_slewRot = new SlewRateLimiter(DriveConstants.kRotationSlew);
   private final DoubleSupplier m_throttleInput, m_strafeInput, m_rotationInput;
+  private final BooleanSupplier m_lockWheels;
 
   /**
    * Creates a new ExampleCommand.
@@ -25,11 +28,13 @@ public class SetSwerveDrive extends CommandBase {
       DriveSubsystem swerveDriveSubsystem,
       DoubleSupplier throttleInput,
       DoubleSupplier strafeInput,
-      DoubleSupplier rotationInput) {
+      DoubleSupplier rotationInput,
+      BooleanSupplier lockWheels) {
     m_swerveDrive = swerveDriveSubsystem;
     m_throttleInput = throttleInput;
     m_strafeInput = strafeInput;
     m_rotationInput = rotationInput;
+    m_lockWheels = lockWheels;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(swerveDriveSubsystem);
   }
@@ -37,6 +42,7 @@ public class SetSwerveDrive extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_swerveDrive.m_fieldOriented = true;
   }
 
   // https://www.chiefdelphi.com/t/swerve-controller-joystick/392544/5
@@ -63,7 +69,12 @@ public class SetSwerveDrive extends CommandBase {
     double strafe_sl = m_slewY.calculate(strafe);
     double rotation_sl = m_slewRot.calculate(rotation);
 
-    m_swerveDrive.drive(throttle_sl, strafe_sl, rotation_sl, true);
+    m_swerveDrive.drive(throttle_sl, strafe_sl, rotation_sl, m_lockWheels.getAsBoolean(), true);
+
+    SmartDashboard.putNumber("inputDrive", throttle_sl);
+    SmartDashboard.putNumber("inputStrafe", strafe_sl);
+    SmartDashboard.putNumber("inputRot", rotation_sl);
+    SmartDashboard.putBoolean("inputLock", m_lockWheels.getAsBoolean());
 
   }
 

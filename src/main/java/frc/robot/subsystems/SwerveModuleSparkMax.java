@@ -30,7 +30,6 @@ import frc.robot.Constants.DriveConstants.ModulePosition;
 import frc.robot.Constants.ModuleConstants;
 import frc.robot.Pref;
 import frc.robot.utils.AngleUtils;
-import frc.robot.utils.ShuffleboardContent;
 
 public class SwerveModuleSparkMax extends SubsystemBase {
   public final CANSparkMax m_driveMotor;
@@ -79,8 +78,6 @@ public class SwerveModuleSparkMax extends SubsystemBase {
   private final int VEL_SLOT = 1;
   private final int SIM_SLOT = 2;
 
-  private final int SM_SLOT = 1;
-
   private int tuneOn;
   public double actualAngleDegrees;
 
@@ -91,7 +88,7 @@ public class SwerveModuleSparkMax extends SubsystemBase {
   public boolean driveMotorConnected;
   public boolean turnMotorConnected;
   public boolean turnCoderConnected;
-  private boolean useRRPid =true;
+  private boolean useRRPid = true;
   private double turnDeadband = .5;
 
   /**
@@ -213,12 +210,6 @@ public class SwerveModuleSparkMax extends SubsystemBase {
     checkCAN();
 
     resetAngleToAbsolute();
-
-    ShuffleboardContent.initDriveShuffleboard(this);
-    ShuffleboardContent.initTurnShuffleboard(this);
-    ShuffleboardContent.initCANCoderShuffleboard(this);
-    ShuffleboardContent.initBooleanShuffleboard(this);
-    ShuffleboardContent.initCoderBooleanShuffleboard(this);
   }
 
   @Override
@@ -250,6 +241,8 @@ public class SwerveModuleSparkMax extends SubsystemBase {
           + m_modulePosition.toString(), m_turnCANcoder.getStickyFaults());
     }
 
+    SmartDashboard.putNumber("drive enc [" + m_modulePosition.toString() + "]", m_driveEncoder.getPosition());
+
   }
 
   public void tunePosGains() {
@@ -277,11 +270,11 @@ public class SwerveModuleSparkMax extends SubsystemBase {
 
     if (RobotBase.isReal())
 
-      return new SwerveModuleState(m_driveEncoder.getVelocity(), new Rotation2d(getHeadingDegrees()));
+      return new SwerveModuleState(m_driveEncoder.getVelocity(), getHeadingRotation2d());
 
     else
 
-      return new SwerveModuleState(m_driveEncoder.getVelocity(), new Rotation2d(Units.degreesToRadians(angle)));
+      return new SwerveModuleState(m_driveEncoder.getVelocity(), Rotation2d.fromDegrees(angle));
   }
 
   public ModulePosition getModulePosition() {
@@ -395,6 +388,11 @@ public class SwerveModuleSparkMax extends SubsystemBase {
       m_turningMotor.setIdleMode(IdleMode.kBrake);
     else
       m_turningMotor.setIdleMode(IdleMode.kCoast);
+  }
+
+  public void zeroModule() {
+    resetAngleToAbsolute();
+    m_driveEncoder.setPosition(0.0);
   }
 
   public void resetAngleToAbsolute() {
