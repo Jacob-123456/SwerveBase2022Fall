@@ -142,8 +142,6 @@ public final class Constants {
 
     public static double kEncoderRevsPerMeter = 1 / kDriveMetersPerEncRev;
 
-    public static double kFreeMetersPerSecond = 5600 * kDriveEncRPMperMPS;
-
     public static double kFreeMetersPerSecond = 5600 * kDriveEncRPMperMPS;// 3.6
   
     public static final double kTurningDegreesPerEncRev =

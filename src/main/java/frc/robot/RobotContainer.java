@@ -11,8 +11,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.ZeroHeading;
-import frc.robot.commands.auto.Spline1Path;
-import frc.robot.commands.auto.Spline2Path;
 import frc.robot.commands.auto.SplineAuto;
 import frc.robot.commands.swerve.SetSwerveDrive;
 import frc.robot.subsystems.DriveSubsystem;
