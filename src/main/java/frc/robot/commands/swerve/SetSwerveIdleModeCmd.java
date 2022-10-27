@@ -7,17 +7,17 @@ import frc.robot.subsystems.SwerveSys;
 /** Sets the drivetrain to neutral (coast/brake) */
 public class SetSwerveIdleModeCmd extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final SwerveSys m_swerveDrive;
+  private final SwerveSys m_swerveSys;
 
   private final boolean m_brake;
   /**
    * Sets the drivetrain neutral mode (coast/brake).
    *
-   * @param driveTrain The driveTrain used by this command.
+   * @param swerveDrive The driveTrain used by this command.
    * @param mode {@link DriveTrainNeutralMode}: COAST, BRAKE, or HALF_BRAKE.
    */
   public SetSwerveIdleModeCmd(SwerveSys swerveDrive, boolean brake) {
-    m_swerveDrive = swerveDrive;
+    m_swerveSys = swerveDrive;
     m_brake = brake;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(swerveDrive);
@@ -26,7 +26,7 @@ public class SetSwerveIdleModeCmd extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_swerveDrive.setIdleMode(m_brake);
+    m_swerveSys.setIdleMode(m_brake);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
