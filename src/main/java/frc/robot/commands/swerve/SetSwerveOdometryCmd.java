@@ -14,7 +14,7 @@ import frc.robot.subsystems.SwerveSys;
 /** Sets the robot's position */
 public class SetSwerveOdometryCmd extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final SwerveSys m_swerveDrive;
+  private final SwerveSys m_swerveSys;
 
   private final Pose2d m_pose2d;
 
@@ -25,7 +25,7 @@ public class SetSwerveOdometryCmd extends CommandBase {
    * @param pose2d position to set odometry to
    */
   public SetSwerveOdometryCmd(SwerveSys swerveDrive, Pose2d pose2d) {
-    m_swerveDrive = swerveDrive;
+    m_swerveSys = swerveDrive;
     m_pose2d = pose2d;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(swerveDrive);
@@ -35,8 +35,8 @@ public class SetSwerveOdometryCmd extends CommandBase {
   @Override
   public void initialize() {
     
-    m_swerveDrive.setOdometry(m_pose2d);
-    // m_driveTrain.setNavXOffset(m_pose2d.getRotation().getDegrees());
+    m_swerveSys.setOdometry(m_pose2d);
+    // m_swerveSysTrain.setNavXOffset(m_pose2d.getRotation().getDegrees());
     // if (RobotBase.isSimulation()) m_fieldSim.resetRobotPose(m_pose2d);
   }
 

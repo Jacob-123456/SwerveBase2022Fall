@@ -2,7 +2,7 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
-      "/LiveWindow/DriveSubsystem": "Subsystem",
+      "/LiveWindow/swerveSys": "Subsystem",
       "/LiveWindow/SwerveModuleSparkMax": "Subsystem",
       "/LiveWindow/SwerveModuleSparkMax4201": "Subsystem",
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",

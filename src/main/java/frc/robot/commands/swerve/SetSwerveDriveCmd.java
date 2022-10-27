@@ -12,7 +12,7 @@ import frc.robot.subsystems.SwerveSys;
 
 public class SetSwerveDriveCmd extends CommandBase {
   @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
-  private final SwerveSys m_swerveDrive;
+  private final SwerveSys m_swerveSys;
   private final SlewRateLimiter m_slewX = new SlewRateLimiter(DriveConstants.kTranslationSlew);
   private final SlewRateLimiter m_slewY = new SlewRateLimiter(DriveConstants.kTranslationSlew);
   private final SlewRateLimiter m_slewRot = new SlewRateLimiter(DriveConstants.kRotationSlew);
@@ -22,27 +22,27 @@ public class SetSwerveDriveCmd extends CommandBase {
   /**
    * Creates a new ExampleCommand.
    *
-   * @param swerveDriveSubsystem The subsystem used by this command.
+   * @param swerveSys The subsystem used by this command.
    */
   public SetSwerveDriveCmd(
-      SwerveSys swerveDriveSubsystem,
+      SwerveSys swerveSys,
       DoubleSupplier throttleInput,
       DoubleSupplier strafeInput,
       DoubleSupplier rotationInput,
       BooleanSupplier lockWheels) {
-    m_swerveDrive = swerveDriveSubsystem;
+    m_swerveSys = swerveSys;
     m_throttleInput = throttleInput;
     m_strafeInput = strafeInput;
     m_rotationInput = rotationInput;
     m_lockWheels = lockWheels;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(swerveDriveSubsystem);
+    addRequirements(swerveSys);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_swerveDrive.m_fieldOriented = true;
+    m_swerveSys.m_fieldOriented = true;
   }
 
   // https://www.chiefdelphi.com/t/swerve-controller-joystick/392544/5
@@ -69,7 +69,7 @@ public class SetSwerveDriveCmd extends CommandBase {
     double strafe_sl = m_slewY.calculate(strafe);
     double rotation_sl = m_slewRot.calculate(rotation);
 
-    m_swerveDrive.drive(throttle_sl, strafe_sl, rotation_sl, m_lockWheels.getAsBoolean(), true);
+    m_swerveSys.drive(throttle_sl, strafe_sl, rotation_sl, m_lockWheels.getAsBoolean(), true);
 
     SmartDashboard.putNumber("inputDrive", throttle_sl);
     SmartDashboard.putNumber("inputStrafe", strafe_sl);

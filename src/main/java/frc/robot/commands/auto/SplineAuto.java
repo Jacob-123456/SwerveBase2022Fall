@@ -8,12 +8,12 @@ import frc.robot.commands.swerve.ZeroHeadingCmd;
 import frc.robot.subsystems.SwerveSys;
 
 public class SplineAuto extends SequentialCommandGroup {
-    public SplineAuto(SwerveSys driveSubsystem) {
+    public SplineAuto(SwerveSys swerveSys) {
         super(
-            new ZeroHeadingCmd(driveSubsystem),
-            new Spline1Path(driveSubsystem),
+            new ZeroHeadingCmd(swerveSys),
+            new Spline1Path(swerveSys),
             new WaitCommand(0.5),
-            new Spline2Path(driveSubsystem)
+            new Spline2Path(swerveSys)
         );
     }
 }

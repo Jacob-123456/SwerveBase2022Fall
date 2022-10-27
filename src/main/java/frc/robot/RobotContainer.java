@@ -23,7 +23,7 @@ import frc.robot.subsystems.SwerveSys;
  */
 public class RobotContainer {
   // The robot's subsystems
-  final SwerveSys m_robotDrive = new SwerveSys();
+  final SwerveSys m_swerveSys = new SwerveSys();
 
   private final SendableChooser<Command> m_autoChooser = new SendableChooser<Command>();
 
@@ -43,28 +43,28 @@ public class RobotContainer {
     initializeAutoChooser();
     // sc.showAll();
     // Configure default commands
-   // m_robotDrive.setDefaultCommand(
+   // m_swerveSys.setDefaultCommand(
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
         // new SetSwerveDrive(
-        // m_robotDrive,
+        // m_swerveSys,
 
         // () -> -m_coDriverController.getRawAxis(1),
         // () -> -m_coDriverController.getRawAxis(0),
         // () -> -m_coDriverController.getRawAxis(4)));
 
-        m_robotDrive.setIdleMode(true);
+        m_swerveSys.setIdleMode(true);
 
-        m_robotDrive.setDefaultCommand(
+        m_swerveSys.setDefaultCommand(
         new SetSwerveDriveCmd(
-            m_robotDrive,
+            m_swerveSys,
             () -> m_leftJoystick.getY(),
             () -> m_leftJoystick.getX(),
             () -> m_rightJoystick.getX(),
             () -> m_leftJoystick.getRawButton(1)));
 
     // driver.leftTrigger.whileHeld(new JogTurnModule(
-    //     m_robotDrive,
+    //     m_swerveSys,
     //     () -> -m_coDriverController.getRawAxis(1),
     //     () -> m_coDriverController.getRawAxis(0),
     //     () -> m_coDriverController.getRawAxis(2),
@@ -72,7 +72,7 @@ public class RobotContainer {
 
     // // individual modules
     // driver.leftBumper.whileHeld(new JogDriveModule(
-    //     m_robotDrive,
+    //     m_swerveSys,
     //     () -> -m_coDriverController.getRawAxis(1),
     //     () -> m_coDriverController.getRawAxis(0),
     //     () -> m_coDriverController.getRawAxis(2),
@@ -81,7 +81,7 @@ public class RobotContainer {
 
     // // all modules
     // driver.rightBumper.whileHeld(new JogDriveModule(
-    //     m_robotDrive,
+    //     m_swerveSys,
     //     () -> -m_coDriverController.getRawAxis(1),
     //     () -> m_coDriverController.getRawAxis(0),
     //     () -> m_coDriverController.getRawAxis(2),
@@ -90,21 +90,21 @@ public class RobotContainer {
 
         
     // position turn modules individually
-    // driver.X_button.whenPressed(new PositionTurnModule(m_robotDrive,
+    // driver.X_button.whenPressed(new PositionTurnModule(m_swerveSys,
     // ModulePosition.FRONT_LEFT));
-    // driver.A_button.whenPressed(new PositionTurnModule(m_robotDrive,
+    // driver.A_button.whenPressed(new PositionTurnModule(m_swerveSys,
     // ModulePosition.FRONT_RIGHT));
-    // driver.B_button.whenPressed(new PositionTurnModule(m_robotDrive,
+    // driver.B_button.whenPressed(new PositionTurnModule(m_swerveSys,
     // ModulePosition.BACK_LEFT));
-    // driver.Y_button.whenPressed(new PositionTurnModule(m_robotDrive,
+    // driver.Y_button.whenPressed(new PositionTurnModule(m_swerveSys,
     // ModulePosition.BACK_RIGHT));
 
-    m_right2.whenPressed(new ZeroHeadingCmd(m_robotDrive));
+    m_right2.whenPressed(new ZeroHeadingCmd(m_swerveSys));
   }
 
   private void initializeAutoChooser() {
     m_autoChooser.setDefaultOption("Do Nothing", new WaitCommand(0));
-    m_autoChooser.addOption("Spline", new SplineAuto(m_robotDrive));
+    m_autoChooser.addOption("Spline", new SplineAuto(m_swerveSys));
 
     SmartDashboard.putData("Auto Selector", m_autoChooser);
 

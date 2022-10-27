@@ -11,16 +11,16 @@ import frc.robot.subsystems.SwerveSys;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class ZeroHeadingCmd extends InstantCommand {
-  private SwerveSys m_drive;
+  private SwerveSys m_swerveSys;
 
   public ZeroHeadingCmd(SwerveSys drive) {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_drive = drive;
+    m_swerveSys = drive;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_drive.zeroHeading();
+    m_swerveSys.zeroHeading();
   }
 }

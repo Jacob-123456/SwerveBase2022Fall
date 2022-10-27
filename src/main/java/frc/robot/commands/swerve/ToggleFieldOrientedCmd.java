@@ -11,16 +11,16 @@ import frc.robot.subsystems.SwerveSys;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class ToggleFieldOrientedCmd extends InstantCommand {
-  private SwerveSys m_drive;
+  private SwerveSys m_swerveSys;
 
-  public ToggleFieldOrientedCmd(SwerveSys drive) {
+  public ToggleFieldOrientedCmd(SwerveSys swerveSys) {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_drive = drive;
+    m_swerveSys = swerveSys;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_drive.m_fieldOriented = !m_drive.m_fieldOriented;
+    m_swerveSys.m_fieldOriented = !m_swerveSys.m_fieldOriented;
   }
 }

@@ -67,7 +67,7 @@ public class Robot extends TimedRobot {
 
     m_robotContainer.periodic();
 
-    m_robotContainer.m_robotDrive.throttleValue = m_robotContainer.getThrottle();
+    m_robotContainer.m_swerveSys.throttleValue = m_robotContainer.getThrottle();
    
   }
 
@@ -113,7 +113,7 @@ SmartDashboard.putStringArray("g", g);
       m_autonomousCommand.cancel();
     }
 
-    // new SetSwerveOdometry(m_robotContainer.m_robotDrive,
+    // new SetSwerveOdometry(m_robotContainer.m_swerveSys,
     // m_robotContainer.m_fieldSim,new Pose2d(6.13, 5.23,
     // Rotation2d.fromDegrees(-41.5))).schedule();
   }

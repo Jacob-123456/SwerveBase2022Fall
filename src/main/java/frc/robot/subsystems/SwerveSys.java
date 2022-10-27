@@ -105,7 +105,7 @@ public class SwerveSys extends SubsystemBase {
 
   public boolean m_fieldOriented;
 
-  /** Creates a new DriveSubsystem. */
+  /** Creates a new swerveSys. */
   public SwerveSys() {
 
     m_gyro.reset();
